@@ -12,6 +12,8 @@ var CHANNEL_CONSUMER_GROUP = 'sample_consumer_group'
 var CHANNEL_TOPIC_SUBSCRIPTIONS = ['case-mgmt-events']
 var VERIFY_CERTIFICATE_BUNDLE = ''
 
+var WAIT_BETWEEN_QUERIES = 5
+
 var channel = new Channel(CHANNEL_URL,
   new ChannelAuth(CHANNEL_URL, CHANNEL_USERNAME,
     CHANNEL_PASSWORD, VERIFY_CERTIFICATE_BUNDLE),
@@ -29,10 +31,10 @@ var run = function () {
             console.log('Subscription error: ' + subscriptionError.message)
           } else {
             channel.run(
-              function (payloads, continueCallback) {
+              function (payloads) {
                 console.log('Consumed payloads: ' +
                   JSON.stringify(payloads, null, 4))
-                continueCallback()
+                return true
               },
               function (runError) {
                 if (runError) {
@@ -41,7 +43,7 @@ var run = function () {
                   run()
                 }
               },
-              5
+              WAIT_BETWEEN_QUERIES
             )
           }
         }
