@@ -1,5 +1,6 @@
 'use strict'
 
+var fs = require('fs')
 var common = require('../common')
 var client = common.requireClient()
 var Channel = client.Channel
@@ -14,42 +15,40 @@ var VERIFY_CERTIFICATE_BUNDLE = ''
 
 var WAIT_BETWEEN_QUERIES = 5
 
-var channel = new Channel(CHANNEL_URL,
-  new ChannelAuth(CHANNEL_URL, CHANNEL_USERNAME,
-    CHANNEL_PASSWORD, VERIFY_CERTIFICATE_BUNDLE),
-  CHANNEL_CONSUMER_GROUP, null, null, null, true,
-  VERIFY_CERTIFICATE_BUNDLE)
+var CA_BUNDLE_TEXT =
+  VERIFY_CERTIFICATE_BUNDLE ? fs.readFileSync(
+    VERIFY_CERTIFICATE_BUNDLE) : null
 
-var run = function () {
-  channel.create(function (createError) {
-    if (createError) {
-      console.log('Create error: ' + createError.message)
-    } else {
-      channel.subscribe(CHANNEL_TOPIC_SUBSCRIPTIONS,
-        function (subscriptionError) {
-          if (subscriptionError) {
-            console.log('Subscription error: ' + subscriptionError.message)
-          } else {
-            channel.run(
-              function (payloads) {
-                console.log('Consumed payloads: ' +
-                  JSON.stringify(payloads, null, 4))
-                return true
-              },
-              function (runError) {
-                if (runError) {
-                  console.log('Run error, exiting: ' + runError.message)
-                } else {
-                  run()
-                }
-              },
-              WAIT_BETWEEN_QUERIES
-            )
-          }
-        }
-      )
-    }
-  })
+var addTlsOptions = function (options) {
+  options = options || {}
+  if (CA_BUNDLE_TEXT) {
+    options.ca = CA_BUNDLE_TEXT
+    options.rejectUnauthorized = true
+  } else {
+    options.rejectUnauthorized = false
+  }
+  return options
 }
 
-run()
+var channel = new Channel(CHANNEL_URL,
+  CHANNEL_CONSUMER_GROUP,
+  addTlsOptions({
+    auth: new ChannelAuth(CHANNEL_URL, CHANNEL_USERNAME,
+      CHANNEL_PASSWORD, addTlsOptions())
+  })
+)
+
+channel.run(
+  function (payloads) {
+    console.log('Consumed payloads: ' +
+      JSON.stringify(payloads, null, 4))
+    return true
+  },
+  function (runError) {
+    if (runError) {
+      console.log('Run error, exiting: ' + runError.message)
+    }
+  },
+  WAIT_BETWEEN_QUERIES,
+  CHANNEL_TOPIC_SUBSCRIPTIONS
+)
