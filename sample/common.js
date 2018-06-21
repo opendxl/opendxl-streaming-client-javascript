@@ -5,7 +5,7 @@ var path = require('path')
 
 module.exports = {
   requireClient: function () {
-    var packageName = '@opendxl/dxl-streaming-consumer-client'
+    var packageName = '@opendxl/dxl-streaming-client'
     var packageFile = path.join(__dirname, '..', 'package.json')
     var module
     // Use local library sources if the example is being run from within a local

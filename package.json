@@ -1,8 +1,8 @@
 {
-  "name": "@opendxl/dxl-streaming-consumer-client",
+  "name": "@opendxl/dxl-streaming-client",
   "version": "0.1.0",
   "author": "McAfee, LLC",
-  "description": "OpenDXL Streaming Consumer client library",
+  "description": "OpenDXL Streaming client library",
   "license": "Apache-2.0",
   "keywords": [
     "opendxl",
@@ -39,7 +39,7 @@
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "git://github.com/opendxl/opendxl-streaming-consumer-client-javascript.git"
+    "url": "git://github.com/opendxl/opendxl-streaming-client-javascript.git"
   },
   "scripts": {
     "predist": "npm install && rimraf *.tgz",
