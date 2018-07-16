@@ -1,6 +1,7 @@
 'use strict'
 
 var fs = require('fs')
+var Buffer = require('safe-buffer').Buffer
 var common = require('../common')
 var client = common.requireClient()
 var Channel = client.Channel
@@ -9,11 +10,8 @@ var ChannelAuth = client.ChannelAuth
 var CHANNEL_URL = 'http://127.0.0.1:50080'
 var CHANNEL_USERNAME = 'me'
 var CHANNEL_PASSWORD = 'secret'
-var CHANNEL_CONSUMER_GROUP = 'sample_consumer_group'
-var CHANNEL_TOPIC_SUBSCRIPTIONS = ['case-mgmt-events', 'my-topic']
+var CHANNEL_TOPIC = 'my-topic'
 var VERIFY_CERTIFICATE_BUNDLE = ''
-
-var WAIT_BETWEEN_QUERIES = 5
 
 var CA_BUNDLE_TEXT =
   VERIFY_CERTIFICATE_BUNDLE ? fs.readFileSync(
@@ -30,25 +28,39 @@ var addTlsOptions = function (options) {
   return options
 }
 
+var messagePayload = {
+  message: 'Hello from OpenDXL'
+}
+
+var channelPayload = {
+  records: [
+    {
+      routingData: {
+        topic: CHANNEL_TOPIC,
+        shardingKey: ''
+      },
+      message: {
+        headers: {},
+        payload: Buffer.from(JSON.stringify(messagePayload)).toString('base64')
+      }
+    }
+  ]
+}
+
 var channel = new Channel(CHANNEL_URL,
   addTlsOptions({
     auth: new ChannelAuth(CHANNEL_URL, CHANNEL_USERNAME,
-      CHANNEL_PASSWORD, addTlsOptions()),
-    consumerGroup: CHANNEL_CONSUMER_GROUP
+      CHANNEL_PASSWORD, addTlsOptions())
   })
 )
 
-channel.run(
-  function (payloads) {
-    console.log('Consumed payloads: ' +
-      JSON.stringify(payloads, null, 4))
-    return true
-  },
-  function (runError) {
-    if (runError) {
-      console.log('Run error, exiting: ' + runError.message)
+channel.produce(
+  channelPayload,
+  function (error) {
+    if (error) {
+      console.log('Error : ' + error)
+    } else {
+      console.log('Succeeded.')
     }
-  },
-  WAIT_BETWEEN_QUERIES,
-  CHANNEL_TOPIC_SUBSCRIPTIONS
+  }
 )
