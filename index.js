@@ -1,5 +1,6 @@
 'use strict'
 
+exports.BaseChannelAuth = require('./lib/base-channel-auth')
 exports.Channel = require('./lib/channel')
 exports.ChannelAuth = require('./lib/channel-auth')
 exports.ConsumerError = require('./lib/consumer-error')
