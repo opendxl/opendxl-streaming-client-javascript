@@ -6,19 +6,35 @@ var client = common.requireClient()
 var Channel = client.Channel
 var ChannelAuth = client.ChannelAuth
 
+// Change these below to match the appropriate details for your
+// channel connection.
 var CHANNEL_URL = 'http://127.0.0.1:50080'
 var CHANNEL_USERNAME = 'me'
 var CHANNEL_PASSWORD = 'secret'
 var CHANNEL_CONSUMER_GROUP = 'sample_consumer_group'
-var CHANNEL_TOPIC_SUBSCRIPTIONS = ['case-mgmt-events', 'my-topic']
+var CHANNEL_TOPIC_SUBSCRIPTIONS = [
+  'case-mgmt-events',
+  'my-topic',
+  'topic-abc123']
+
+// Path to a CA bundle file containing certificates of trusted CAs. The CA
+// bundle is used to validate that the certificate of the server being connected
+// to was signed by a valid authority. If set to an empty string, the server
+// certificate is not validated.
 var VERIFY_CERTIFICATE_BUNDLE = ''
 
+// This constant controls the frequency (in seconds) at which the channel 'run'
+// call below polls the streaming service for new records.
 var WAIT_BETWEEN_QUERIES = 5
 
+// Read the contents of the CA bundle file into a string if one was specified
+// above for the VERIFY_CERTIFICATE_BUNDLE constant.
 var CA_BUNDLE_TEXT =
   VERIFY_CERTIFICATE_BUNDLE ? fs.readFileSync(
     VERIFY_CERTIFICATE_BUNDLE) : null
 
+// Add TLS-related options to the supplied options object. This is used to
+// supply the CA bundle file content for server verification.
 var addTlsOptions = function (options) {
   options = options || {}
   if (CA_BUNDLE_TEXT) {
@@ -30,6 +46,7 @@ var addTlsOptions = function (options) {
   return options
 }
 
+// Create a new channel object
 var channel = new Channel(CHANNEL_URL,
   addTlsOptions({
     auth: new ChannelAuth(CHANNEL_URL, CHANNEL_USERNAME,
@@ -38,15 +55,25 @@ var channel = new Channel(CHANNEL_URL,
   })
 )
 
+// Consume records indefinitely
 channel.run(
+  // The function below is called back upon by the 'run' method when
+  // records are received from the channel.
   function (payloads) {
-    console.log('Consumed payloads: ' +
-      JSON.stringify(payloads, null, 4))
+    // Print the payloads which were received. 'payloads' is an array of
+    // objects extracted from the records received from the channel.
+    console.log('Received payloads: ' + JSON.stringify(payloads, null, 4))
+    // Return 'True' in order for the 'run' call to continue attempting to
+    // consume records.
     return true
   },
+  // The function below is called if the 'run' is stopped. If the 'run' is
+  // stopped due to an error, the 'runError' object contains a 'Error' type
+  // object.
   function (runError) {
     if (runError) {
       console.log('Run error, exiting: ' + runError.message)
+      channel.destroy()
     }
   },
   WAIT_BETWEEN_QUERIES,

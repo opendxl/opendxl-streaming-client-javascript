@@ -1,0 +1,19 @@
+{
+  "overview": {
+    "title": "Overview"
+  },
+  "installation": {
+    "title": "Library Installation"
+  },
+  "samples": {
+    "title": "Samples",
+    "children": {
+      "basic-consume-example": {
+        "title": "Basic Consume Example"
+      },
+      "basic-produce-example": {
+        "title": "Basic Produce Example"
+      }
+    }
+  }
+}
