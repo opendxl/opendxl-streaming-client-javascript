@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Tutorial: Basic Produce Example</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Tutorial: Basic Produce Example</h1>
+
+    <section>
+
+<header>
+    
+
+    <h2>Basic Produce Example</h2>
+</header>
+
+<article>
+    <p>This sample demonstrates how to produce records to the DXL streaming service.</p>
+<h3>Prerequisites</h3><ul>
+<li>A DXL streaming service is available for the sample to connect to.</li>
+<li>Credentials for the service available for use with the sample.</li>
+</ul>
+<h3>Setup</h3><p>Modify the example to include the appropriate settings for the streaming
+service channel:</p>
+<pre class="prettyprint source lang-js"><code>// Change these below to match the appropriate details for your
+// channel connection.
+var CHANNEL_URL = 'http://127.0.0.1:50080'
+var CHANNEL_USERNAME = 'me'
+var CHANNEL_PASSWORD = 'secret'
+var CHANNEL_TOPIC = 'my-topic'
+// Path to a CA bundle file containing certificates of trusted CAs. The CA
+// bundle is used to validate that the certificate of the server being connected
+// to was signed by a valid authority. If set to an empty string, the server
+// certificate is not validated.
+var VERIFY_CERTIFICATE_BUNDLE = ''</code></pre><p>For testing purposes, you can use the <code>fake_streaming_service</code> Python tool
+embedded in the OpenDXL Streaming Client SDK to start up a local streaming
+service. See the documentation for the
+<a href="https://opendxl.github.io/opendxl-streaming-client-python/pydoc/basicproduceexample.html#setup">Basic Produce Example</a>
+in the OpenDXL Streaming Client Python SDK for more information on the
+<code>fake_streaming_service</code> tool. The initial settings in the example above include
+the URL and credentials used by the <code>fake_streaming_service</code>.</p>
+<p>To launch the <code>fake_streaming_service</code> tool, run the following command in
+a command window:</p>
+<pre class="prettyprint source lang-sh"><code>$ python sample/fake_streaming_service.py</code></pre><p>Messages like the following should appear in the command window:</p>
+<pre class="prettyprint source lang-sh"><code>INFO:__main__:Starting service
+INFO:__main__:Started service on http://mycaseserver:50080</code></pre><h3>Running</h3><p>To run this sample execute the <code>sample/basic/basic-produce-example.js</code> script
+as follows:</p>
+<pre class="prettyprint source lang-sh"><code>$ node sample/basic/basic-produce-example.js</code></pre><p>If the records are successfully produced to the streaming service, the
+following line should appear in the output window:</p>
+<pre class="prettyprint source lang-sh"><code>Succeeded.</code></pre><p>To validate that the records were produced to the streaming service with
+the expected content, you can execute the
+<code>sample/basic/basic-consume-example.js</code> script as follows:</p>
+<pre class="prettyprint source lang-sh"><code>$ node sample/basic/basic-consume-example.js</code></pre><p>One of the records received by the sample should appear similar to the
+following:</p>
+<pre class="prettyprint source lang-sh"><code>Received payloads: [
+    {
+        &quot;message&quot;: &quot;Hello from OpenDXL&quot;
+    }
+]</code></pre><h3>Details</h3><p>The majority of the sample code is shown below:</p>
+<pre class="prettyprint source lang-js"><code>var CHANNEL_TOPIC = 'my-topic'
+
+// Create the message payload to be included in a record
+var messagePayload = {
+  message: 'Hello from OpenDXL'
+}
+
+// Create the full payload with records to produce to the channel
+var channelPayload = {
+  records: [
+    {
+      routingData: {
+        topic: CHANNEL_TOPIC,
+        shardingKey: ''
+      },
+      message: {
+        headers: {},
+        // Convert the message payload from an object to a base64-encoded
+        // string.
+        payload: Buffer.from(JSON.stringify(messagePayload)).toString('base64')
+      }
+    }
+  ]
+}
+
+// Create a new channel object
+var channel = new Channel(CHANNEL_URL,
+  addTlsOptions({
+    auth: new ChannelAuth(CHANNEL_URL, CHANNEL_USERNAME,
+      CHANNEL_PASSWORD, addTlsOptions())
+  })
+)
+
+// Produce the payload records to the channel
+channel.produce(
+  channelPayload,
+  function (error) {
+    channel.destroy()
+    if (error) {
+      console.log('Error : ' + error)
+    } else {
+      console.log('Succeeded.')
+    }
+  }
+)</code></pre><p>The first step is to create a payload object which includes an array of
+records to be sent to the channel. The <code>message.payload</code> item in each record
+is flattened from a dictionary into a string and encoded using the <code>base64</code>
+algorithm.</p>
+<p>The next step is to create a <a href="Channel.html">Channel</a> instance, which establishes a
+channel to the streaming service. The channel parameters include the URL to the
+streaming service, <code>CHANNEL_URL</code>, and credentials that the client uses to
+authenticate itself to the service, <code>CHANNEL_USERNAME</code> and <code>CHANNEL_PASSWORD</code>.</p>
+<p>The final step is to call the <a href="Channel.html#produce">Channel#produce</a> method with the payload of
+records to be produced to the channel. Assuming the records can be produced
+successfully, the text &quot;Succeeded.&quot; should appear in the console output.</p>
+</article>
+
+</section>
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Channel.html">Channel</a></li><li><a href="ChannelAuth.html">ChannelAuth</a></li><li><a href="ConsumerError.html">ConsumerError</a></li><li><a href="PermanentAuthenticationError.html">PermanentAuthenticationError</a></li><li><a href="PermanentError.html">PermanentError</a></li><li><a href="StopError.html">StopError</a></li><li><a href="TemporaryAuthenticationError.html">TemporaryAuthenticationError</a></li><li><a href="TemporaryError.html">TemporaryError</a></li></ul><h3>Tutorials</h3><ul><li><a href="tutorial-installation.html">Library Installation</a></li><li><a href="tutorial-samples.html">Samples</a></li></ul><h3>Interfaces</h3><ul><li><a href="BaseChannelAuth.html">BaseChannelAuth</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a>
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
