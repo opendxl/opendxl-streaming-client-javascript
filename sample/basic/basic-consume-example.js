@@ -2,7 +2,7 @@
 
 var fs = require('fs')
 var common = require('../common')
-var client = common.requireClient()
+var client = common.require('@opendxl/dxl-streaming-client')
 var Channel = client.Channel
 var ChannelAuth = client.ChannelAuth
 

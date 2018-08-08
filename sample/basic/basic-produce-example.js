@@ -1,9 +1,9 @@
 'use strict'
 
 var fs = require('fs')
-var Buffer = require('safe-buffer').Buffer
 var common = require('../common')
-var client = common.requireClient()
+var Buffer = common.require('safe-buffer').Buffer
+var client = common.require('@opendxl/dxl-streaming-client')
 var Channel = client.Channel
 var ChannelAuth = client.ChannelAuth
 
