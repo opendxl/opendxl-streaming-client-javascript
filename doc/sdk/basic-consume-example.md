@@ -137,17 +137,20 @@ channel.run(
     // consume records.
     return true
   },
-  // The function below is called if the 'run' is stopped. If the 'run' is
-  // stopped due to an error, the 'runError' object contains a 'Error' type
-  // object.
-  function (runError) {
-    if (runError) {
-      console.log('Run error, exiting: ' + runError.message)
-      channel.destroy()
-    }
-  },
-  WAIT_BETWEEN_QUERIES,
-  CHANNEL_TOPIC_SUBSCRIPTIONS
+  {
+    doneCallback:
+      // The function below is called if the 'run' is stopped. If the 'run' is
+      // stopped due to an error, the 'runError' object contains a 'Error' type
+      // object.
+      function (runError) {
+        if (runError) {
+          console.log('Run error, exiting: ' + runError.message)
+          channel.destroy()
+        }
+      },
+    waitBetweenQueries: WAIT_BETWEEN_QUERIES,
+    topics: CHANNEL_TOPIC_SUBSCRIPTIONS
+  }
 )
 ```
 
