@@ -40,7 +40,7 @@ var TemporaryError = require('./temporary-error')
 var DEFAULT_CONSUMER_PATH_PREFIX = '/databus/consumer-service/v1'
 var DEFAULT_PRODUCER_PATH_PREFIX = '/databus/cloudproxy/v1'
 
-// Constans for consumer config settings
+// Constants for consumer config settings
 var AUTO_OFFSET_RESET_CONFIG_SETTING = 'auto.offset.reset'
 var ENABLE_AUTO_COMMIT_CONFIG_SETTING = 'enable.auto.commit'
 var REQUEST_TIMEOUT_CONFIG_SETTING = 'request.timeout.ms'
@@ -959,23 +959,25 @@ Channel.prototype.commit = function (callback) {
  * this method.
  * @param {Function} processCallback - Callback to invoke with an array
  *   of payloads from records which have been consumed.
- * @param {Function} [doneCallback] - Callback to invoke when the run is
+ * @param {Object} [options] - Options to use for the channel.
+ * @param {Function} [options.doneCallback] - Callback to invoke when the run is
  *   complete. The first parameter supplied to the callback is an `Error`
  *   object, if an error occurred during the run, else `null`.
- * @param {Number} [waitBetweenQueries=30] - Number of seconds to wait between
- *   calls to consume records.
- * @param {(String|Array&lt;String>)} [topics] - Topic or array of topics. If set
- *   to a non-empty value, the channel will be subscribed to the specified
- *   topics. If set to an empty value, the channel will use topics previously
- *   subscribed via a call to the {@link Channel#subscribe} method.
+ * @param {Number} [options.waitBetweenQueries=30] - Number of seconds to wait
+ *   between calls to consume records.
+ * @param {(String|Array&lt;String>)} [options.topics] - Topic or array of topics.
+ *   If set to a non-empty value, the channel will be subscribed to the
+ *   specified topics. If set to an empty value, the channel will use topics
+ *   previously subscribed via a call to the {@link Channel#subscribe} method.
  * @throws {PermanentError} If a previous run is already in progress.
  */
-Channel.prototype.run = function (processCallback, doneCallback,
-                                  waitBetweenQueries, topics) {
+Channel.prototype.run = function (processCallback, options) {
   if (!this._consumerGroup) {
     throw new PermanentError(
       "No value specified for 'consumerGroup' option during channel init")
   }
+
+  options = options || {}
 
   if (!processCallback) {
     throw new PermanentError('Value must be specified for processCallback')
@@ -984,8 +986,12 @@ Channel.prototype.run = function (processCallback, doneCallback,
     throw new PermanentError('Previous run already in progress')
   }
 
-  waitBetweenQueries = waitBetweenQueries || DEFAULT_WAIT_BETWEEN_QUERIES
+  var doneCallback = options.doneCallback
 
+  var waitBetweenQueries =
+    options.waitBetweenQueries || DEFAULT_WAIT_BETWEEN_QUERIES
+
+  var topics = options.topics
   if (typeof topics === 'string') {
     topics = [topics]
   }

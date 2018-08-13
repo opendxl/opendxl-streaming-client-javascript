@@ -1632,7 +1632,7 @@ server. For a failed consume, the second parameter is <code>null</code>.</p></td
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="channel.js.html">channel.js</a>, <a href="channel.js.html#line1043">line 1043</a>
+        <a href="channel.js.html">channel.js</a>, <a href="channel.js.html#line1049">line 1049</a>
     </li></ul></dd>
     
 
@@ -1786,7 +1786,7 @@ made to the channel.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="channel.js.html">channel.js</a>, <a href="channel.js.html#line1115">line 1115</a>
+        <a href="channel.js.html">channel.js</a>, <a href="channel.js.html#line1121">line 1121</a>
     </li></ul></dd>
     
 
@@ -1969,7 +1969,7 @@ made to the channel.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="channel.js.html">channel.js</a>, <a href="channel.js.html#line1082">line 1082</a>
+        <a href="channel.js.html">channel.js</a>, <a href="channel.js.html#line1088">line 1088</a>
     </li></ul></dd>
     
 
@@ -2089,7 +2089,7 @@ made to the channel.</p>
     
 
     
-    <h4 class="name" id="run"><span class="type-signature"></span>run<span class="signature">(processCallback, doneCallback<span class="signature-attributes">opt</span>, waitBetweenQueries<span class="signature-attributes">opt</span>, topics<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="run"><span class="type-signature"></span>run<span class="signature">(processCallback, options<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
     
 
     
@@ -2133,8 +2133,6 @@ this method.</p>
         
 
         
-        <th>Default</th>
-        
 
         <th class="last">Description</th>
     </tr>
@@ -2168,15 +2166,67 @@ this method.</p>
             
 
             
-                <td class="default">
-                
-                </td>
-            
 
             <td class="description last"><p>Callback to invoke with an array
   of payloads from records which have been consumed.</p></td>
         </tr>
 
+    
+
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>Options to use for the channel.</p>
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
     
 
         <tr>
@@ -2252,8 +2302,8 @@ this method.</p>
                 </td>
             
 
-            <td class="description last"><p>Number of seconds to wait between
-  calls to consume records.</p></td>
+            <td class="description last"><p>Number of seconds to wait
+  between calls to consume records.</p></td>
         </tr>
 
     
@@ -2293,10 +2343,17 @@ this method.</p>
                 </td>
             
 
-            <td class="description last"><p>Topic or array of topics. If set
-  to a non-empty value, the channel will be subscribed to the specified
-  topics. If set to an empty value, the channel will use topics previously
-  subscribed via a call to the <a href="Channel.html#subscribe">Channel#subscribe</a> method.</p></td>
+            <td class="description last"><p>Topic or array of topics.
+  If set to a non-empty value, the channel will be subscribed to the
+  specified topics. If set to an empty value, the channel will use topics
+  previously subscribed via a call to the <a href="Channel.html#subscribe">Channel#subscribe</a> method.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
         </tr>
 
     
@@ -2337,7 +2394,7 @@ this method.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="channel.js.html">channel.js</a>, <a href="channel.js.html#line945">line 945</a>
+        <a href="channel.js.html">channel.js</a>, <a href="channel.js.html#line946">line 946</a>
     </li></ul></dd>
     
 
@@ -2516,7 +2573,7 @@ callback is invoked after the run has been completed.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="channel.js.html">channel.js</a>, <a href="channel.js.html#line1018">line 1018</a>
+        <a href="channel.js.html">channel.js</a>, <a href="channel.js.html#line1024">line 1024</a>
     </li></ul></dd>
     
 
