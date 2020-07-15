@@ -1,6 +1,6 @@
 {
   "name": "@opendxl/dxl-streaming-client",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "McAfee, LLC",
   "description": "OpenDXL Streaming client library",
   "license": "Apache-2.0",
