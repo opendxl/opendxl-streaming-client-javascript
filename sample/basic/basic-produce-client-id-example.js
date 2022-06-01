@@ -5,16 +5,16 @@ var common = require('../common')
 var Buffer = common.require('safe-buffer').Buffer
 var client = common.require('@opendxl/dxl-streaming-client')
 var Channel = client.Channel
-var ChannelAuth = client.ChannelAuth
+var ChannelToken = client.ChannelToken
 
 // Change these below to match the appropriate details for your
 // channel connection.
 var CHANNEL_URL = 'http://127.0.0.1:50080'
-var CHANNEL_CLIENT_ID = "me"
-var CHANNEL_CLIENT_SECRET = "secret"
-var CHANNEL_SCOPE=""
-var CHANNEL_GRANT_TYPE=""
-var CHANNEL_AUDIENCE=""
+var CHANNEL_CLIENT_ID = 'me'
+var CHANNEL_CLIENT_SECRET = 'secret'
+var CHANNEL_SCOPE = ''
+var CHANNEL_GRANT_TYPE = ''
+var CHANNEL_AUDIENCE = ''
 var CHANNEL_TOPIC = 'my-topic'
 // Path to a CA bundle file containing certificates of trusted CAs. The CA
 // bundle is used to validate that the certificate of the server being connected
